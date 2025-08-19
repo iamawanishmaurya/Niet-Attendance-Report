@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIET Attendance Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Light Theme Styles */
+        .light body {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .light .card {
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .light .subject-title, .light h1, .light h2 {
+            color: #1f2937;
+        }
+        .light .text-gray-600 {
+            color: #4b5563;
+        }
+        .light .text-gray-500 {
+            color: #6b7280;
+        }
+        .light .border-bottom {
+            border-color: #e5e7eb;
+        }
+        .light .login-form {
+            background-color: #ffffff;
+        }
+
+        /* Dark Theme Styles */
+        .dark body {
+            background-color: #1f2937;
+            color: #e5e7eb;
+        }
+        .dark .card {
+            background-color: #374151;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+        }
+        .dark .subject-title, .dark h1, .dark h2 {
+            color: #f9fafb;
+        }
+        .dark .text-gray-600 {
+            color: #9ca3af;
+        }
+        .dark .text-gray-500 {
+            color: #d1d5db;
+        }
+        .dark .border-bottom {
+            border-color: #4b5563;
+        }
+        .dark .status {
+            color: #1f2937;
+        }
+        .dark .login-form {
+            background-color: #374151;
+        }
+
+        /* Shared Styles */
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+        .card {
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        @media (min-width: 640px) {
+            .card {
+                padding: 2rem;
+            }
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+        .status {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .status-P {
+            background-color: #34d399;
+        }
+        .status-A {
+            background-color: #f87171;
+        }
+        .subject-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        @media (min-width: 640px) {
+            .subject-title {
+                font-size: 1.5rem;
+            }
+        }
+        .back-button {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: inline-block;
+            cursor: pointer;
+            border: none;
+        }
+        .theme-toggle {
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            border: none;
+        }
+        .login-form {
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .dark .form-input {
+            background-color: #4b5563;
+            border-color: #6b7280;
+            color: #e5e7eb;
+        }
+        .form-button {
+            width: 100%;
+            background-color: #4f46e5;
+            color: white;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        .form-button:hover {
+            background-color: #4338ca;
+        }
+        .form-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: #ef4444;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .success-message {
+            color: #10b981;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .spinner {
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .cors-notice {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #92400e;
+        }
+        .dark .cors-notice {
+            background-color: #451a03;
+            border-color: #f59e0b;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <button id="theme-toggle" class="theme-toggle">Toggle Dark Mode</button>
+
+    <div id="app" class="container">
+        <!-- Login Form -->
+        <div id="login-screen">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center mb-6">NIET Attendance Report</h1>
+            <div class="login-form">
+                
+                <h2 class="text-xl font-semibold mb-4 text-center">Enter Session Details</h2>
+                <form id="login-form">
+                    <input 
+                        type="text" 
+                        id="jsessionid" 
+                        placeholder="Enter your JSESSIONID" 
+                        class="form-input" 
+                        required
+                    >
+                    <button type="submit" id="fetch-button" class="form-button">
+                        <span id="button-text">Fetch Attendance</span>
+                    </button>
+                </form>
+                <div id="message" class="error-message" style="display: none;"></div>
+                <div class="mt-4 text-sm text-center text-gray-600">
+                    <p><strong>How to get JSESSIONID:</strong></p>
+                    <p>1. Log in to NIET Cloud</p>
+                    <p>2. Open Developer Tools (F12)</p>
+                    <p>3. Go to Application → Cookies</p>
+                    <p>4. Copy the JSESSIONID value</p>
+                </div>
+                
+                <div class="mt-6 text-sm text-center text-gray-600">
+                    <p><strong>Alternative:</strong> Use <a href="#" class="text-blue-600 underline" onclick="showCORSWorkaround()">CORS browser extension</a> if direct access fails</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-app" style="display: none;">
+            <h1 class="text-2xl sm:text-3xl font-bold text-center mb-2 sm:mb-4">Attendance Report</h1>
+            <div class="text-center mb-4">
+                <button id="logout-button" class="back-button">Change Session</button>
+            </div>
+            <p id="overall-percentage" class="text-center font-bold text-lg mb-6 sm:mb-8"></p>
+            <div id="date-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"></div>
+            <div id="details-view" class="hidden"></div>
+        </div>
+
+        <!-- CORS Workaround Modal -->
+        <div id="cors-modal" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-content-center z-50">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg max-w-md mx-4">
+                <h3 class="text-lg font-semibold mb-4">CORS Workaround</h3>
+                <p class="mb-4 text-sm">To bypass CORS restrictions:</p>
+                <ol class="text-sm list-decimal list-inside space-y-2 mb-4">
+                    <li>Install a CORS browser extension like "CORS Unblock"</li>
+                    <li>Enable the extension</li>
+                    <li>Reload this page</li>
+                    <li>Try fetching attendance again</li>
+                </ol>
+                <button onclick="hideCORSWorkaround()" class="form-button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AttendanceApp {
+            constructor() {
+                this.data = [];
+                this.attendanceByDate = {};
+                this.totalClassesAllSubjects = 0;
+                this.totalPresentAllSubjects = 0;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+                this.setupTheme();
+            }
+
+            initializeElements() {
+                this.loginScreen = document.getElementById('login-screen');
+                this.mainApp = document.getElementById('main-app');
+                this.loginForm = document.getElementById('login-form');
+                this.fetchButton = document.getElementById('fetch-button');
+                this.buttonText = document.getElementById('button-text');
+                this.messageElement = document.getElementById('message');
+                this.logoutButton = document.getElementById('logout-button');
+                this.dateListContainer = document.getElementById('date-list');
+                this.detailsViewContainer = document.getElementById('details-view');
+                this.appTitle = document.querySelector('#main-app h1');
+                this.overallPercentageElement = document.getElementById('overall-percentage');
+                this.themeToggle = document.getElementById('theme-toggle');
+            }
+
+            setupEventListeners() {
+                this.loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+                this.logoutButton.addEventListener('click', () => this.handleLogout());
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+            }
+
+            setupTheme() {
+                const html = document.documentElement;
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    html.classList.add('dark');
+                }
+            }
+
+            toggleTheme() {
+                document.documentElement.classList.toggle('dark');
+            }
+
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const jsessionid = document.getElementById('jsessionid').value.trim();
+                
+                if (!jsessionid) {
+                    this.showMessage('Please enter a valid JSESSIONID', 'error');
+                    return;
+                }
+                
+                this.setLoading(true);
+                this.hideMessage();
+
+                try {
+                    // Direct API call to NIET Cloud (may be blocked by CORS)
+                    const url = `https://nietcloud.niet.co.in/getSubjectOnChangeWithSemId1.json?termId=3&refreshData=0`;
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json, text/javascript, */*; q=0.01',
+                            'Accept-Language': 'en-US,en;q=0.9',
+                            'Cookie': `JSESSIONID=${jsessionid}`,
+                            'Referer': 'https://nietcloud.niet.co.in/studentCourseFileNew.htm?shwA=%2700A%27',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: Failed to fetch attendance data. Please check your JSESSIONID.`);
+                    }
+
+                    const attendanceData = await response.json();
+
+                    if (!attendanceData || !Array.isArray(attendanceData) || attendanceData.length === 0) {
+                        throw new Error('No attendance data found. Please check your JSESSIONID.');
+                    }
+
+                    this.data = attendanceData;
+                    this.processData();
+                    this.showMainApp();
+                    this.renderDateList();
+                    this.showMessage('Attendance data loaded successfully!', 'success');
+                    
+                } catch (error) {
+                    if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                        this.showMessage('CORS blocked this request. Please use the Python server version or enable a CORS browser extension.', 'error');
+                    } else {
+                        this.showMessage(error.message, 'error');
+                    }
+                } finally {
+                    this.setLoading(false);
+                }
+            }
+
+            processData() {
+                this.attendanceByDate = {};
+                this.totalClassesAllSubjects = 0;
+                this.totalPresentAllSubjects = 0;
+
+                this.data.forEach(subjectData => {
+                    const subjectName = subjectData.subject;
+                    const attendanceString = subjectData.studentAttendanceData;
+                    const presentCount = parseInt(subjectData.stdAttPresentCount) || 0;
+                    const absentCount = parseInt(subjectData.stdAttAbsentCount) || 0;
+
+                    this.totalPresentAllSubjects += presentCount;
+                    this.totalClassesAllSubjects += presentCount + absentCount;
+                    
+                    if (attendanceString) {
+                        const records = attendanceString.split(';');
+                        records.forEach(record => {
+                            const parts = record.split('^^^');
+                            if (parts.length > 3) {
+                                const date = parts[0];
+                                const time = `${parts[1]} - ${parts[2]}`;
+                                const status = parts[3];
+
+                                if (!this.attendanceByDate[date]) {
+                                    this.attendanceByDate[date] = [];
+                                }
+                                this.attendanceByDate[date].push({
+                                    subject: subjectName,
+                                    time,
+                                    status,
+                                    presentCount,
+                                    absentCount
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+            setLoading(isLoading) {
+                if (isLoading) {
+                    this.buttonText.innerHTML = '<div class="loading"><div class="spinner"></div>Fetching...</div>';
+                    this.fetchButton.disabled = true;
+                } else {
+                    this.buttonText.textContent = 'Fetch Attendance';
+                    this.fetchButton.disabled = false;
+                }
+            }
+
+            showMessage(message, type = 'error') {
+                this.messageElement.textContent = message;
+                this.messageElement.className = type === 'error' ? 'error-message' : 'success-message';
+                this.messageElement.style.display = 'block';
+            }
+
+            hideMessage() {
+                this.messageElement.style.display = 'none';
+            }
+
+            showMainApp() {
+                this.loginScreen.style.display = 'none';
+                this.mainApp.style.display = 'block';
+            }
+
+            handleLogout() {
+                this.mainApp.style.display = 'none';
+                this.loginScreen.style.display = 'block';
+                this.data = [];
+                this.attendanceByDate = {};
+                document.getElementById('jsessionid').value = '';
+                this.hideMessage();
+            }
+
+            displayOverallPercentage() {
+                if (this.totalClassesAllSubjects > 0) {
+                    const overallPercentage = ((this.totalPresentAllSubjects / this.totalClassesAllSubjects) * 100).toFixed(2);
+                    this.overallPercentageElement.textContent = `Overall Attendance: ${overallPercentage}%`;
+                } else {
+                    this.overallPercentageElement.textContent = `No attendance data available.`;
+                }
+            }
+
+            renderDateList() {
+                this.dateListContainer.innerHTML = '';
+                this.detailsViewContainer.classList.add('hidden');
+                this.dateListContainer.classList.remove('hidden');
+                this.appTitle.textContent = 'Attendance Report';
+                this.overallPercentageElement.classList.remove('hidden');
+                this.displayOverallPercentage();
+
+                const dates = Object.keys(this.attendanceByDate).sort((a, b) => new Date(b) - new Date(a));
+
+                dates.forEach(date => {
+                    const totalClasses = this.attendanceByDate[date].length;
+                    const presentClasses = this.attendanceByDate[date].filter(item => item.status === 'P').length;
+                    const absentClasses = totalClasses - presentClasses;
+
+                    const dateCard = document.createElement('div');
+                    dateCard.className = 'card cursor-pointer transform transition-transform hover:scale-105 hover:shadow-lg';
+                    dateCard.innerHTML = `
+                        <h2 class="text-xl font-semibold">${date}</h2>
+                        <p class="text-sm mt-2">Classes: ${totalClasses}</p>
+                        <div class="mt-4 flex justify-between">
+                            <span class="status status-P">${presentClasses} Present</span>
+                            <span class="status status-A">${absentClasses} Absent</span>
+                        </div>
+                    `;
+                    dateCard.addEventListener('click', () => this.renderDetailsView(date));
+                    this.dateListContainer.appendChild(dateCard);
+                });
+            }
+
+            renderDetailsView(date) {
+                this.dateListContainer.classList.add('hidden');
+                this.detailsViewContainer.classList.remove('hidden');
+                this.detailsViewContainer.innerHTML = '';
+                this.appTitle.textContent = `Attendance on ${date}`;
+                this.overallPercentageElement.classList.add('hidden');
+
+                const backButton = document.createElement('button');
+                backButton.className = 'back-button mb-6';
+                backButton.textContent = '← Back to Dates';
+                backButton.onclick = () => this.renderDateList();
+                this.detailsViewContainer.appendChild(backButton);
+
+                const attendanceDetails = this.attendanceByDate[date];
+
+                attendanceDetails.forEach(item => {
+                    const totalClasses = item.presentCount + item.absentCount;
+                    const percentage = totalClasses > 0 ? ((item.presentCount / totalClasses) * 100).toFixed(2) : 0;
+
+                    const detailCard = document.createElement('div');
+                    detailCard.className = 'card mb-4';
+                    detailCard.innerHTML = `
+                        <h3 class="text-lg font-semibold">${item.subject}</h3>
+                        <p class="text-sm mt-1">Time: ${item.time}</p>
+                        <p class="text-sm mt-1">Percentage: ${percentage}%</p>
+                        <div class="mt-4">
+                            <span class="status status-${item.status}">${item.status === 'P' ? 'Present' : 'Absent'}</span>
+                        </div>
+                    `;
+                    this.detailsViewContainer.appendChild(detailCard);
+                });
+            }
+        }
+
+        // CORS Modal functions
+        function showCORSWorkaround() {
+            document.getElementById('cors-modal').style.display = 'flex';
+        }
+
+        function hideCORSWorkaround() {
+            document.getElementById('cors-modal').style.display = 'none';
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            new AttendanceApp();
+        });
+    </script>
+</body>
+</html>
